@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block main %}
+<article>
+  <header>
+    <img src="{{ url_for('static', filename='images/Diplodus cervinus.jpg') }}" alt="">
+  </header>
+  <main>
+    <h2>RECOFISH</h2>
+    <span>Bienvenue !</span>
+    <p>A partir d’une photo d’un poisson marin des côtes françaises ou de l’étal du poissonier,
+Recofish vous permet de l’identifier et de mieux connaître :<p>
+<ul>
+<li>Sa biologie
+<li>La reglementation sur sa pêche
+<li>L’état de santé de l’espèce
+<li>Les pratiques de pêche la concernant
+  </ul>
+  </main>
+  <footer>
+    <button id="btnAdd">Install App</button>
+  </footer>
+</article>
+{% endblock %}
