@@ -9,6 +9,7 @@ from PIL import Image
 import torch
 import torchvision.transforms as transforms
 from matplotlib import pyplot as plt
+# Linux: pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
 PATH = "."
 img_dir = Path(PATH + '/images')
