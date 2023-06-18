@@ -18,8 +18,8 @@
       </div>
       <div id="capture">
           <form method="POST" enctype="multipart/form-data" action="/classify">
-              <input type="file" style='display:none;' name='image' id='select_image' accept="image/x-png,image/jpeg,image/gif"/>
-              <input type=submit value='Soumettre une image'>
+              <input type="file" name='image' id='select_image' accept="image/x-png,image/jpeg,image/gif"/>
+              <input type=submit value='Soumettre 1 image'>
           </form>
       </div>
   </main>
@@ -33,7 +33,6 @@
 function callProcessImage(fileInput, previewID) {
     processSingleImage(fileInput, previewID);
 }
-//                   onChange='callProcessImage(this, "Img");'/>
 
 function upload(): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
