@@ -61,9 +61,6 @@ def predict_img(img, k=3):
     # .set_index('nom_scientifique')
     return species
 
-    # return {classes[i]: float(prediction[i]) for i in range(num_classes)}
-    return img, img_name, best_k, values
-
 
 def show_topk(img, k=3):
     fig = plt.figure(figsize=(10, 7))
@@ -84,7 +81,7 @@ def show_topk(img, k=3):
 
 
 def load_model_images(species):
-    images = [Image.open(os.path.join(img_dir, sp['ID'], sp['class_img'])) for sp in species.iterrows()]
+    images = [os.path.join(img_dir, sp['ID'], sp['class_img']) for sp in species.iterrows()]
     return images
 
 

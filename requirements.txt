@@ -4,7 +4,9 @@ numpy==1.25.0
 pandas~=2.0.2
 Pillow~=9.5.0
 # torch, torchvision: We need cpu versions for Heroku. The CUDA packages are far too big (slug size
+https://download.pytorch.org/whl/cpu-cxx11-abi/torch-2.0.1%2Bcpu.cxx11.abi-cp311-cp311-linux_x86_64.whl  # cpu version for linux
+https://download.pytorch.org/whl/cpu/torchvision-0.15.2%2Bcpu-cp311-cp311-linux_x86_64.whl  # cpu version for linux
 timm~=0.9.2
+gunicorn==20.1.0
+Flask-SSLify==0.1.5
 matplotlib~=3.7.1
-torch~=2.0.1
-torchvision~=0.15.2

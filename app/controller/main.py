@@ -4,11 +4,13 @@ from flask import (
 from flask import request, redirect, flash, url_for
 from werkzeug.utils import secure_filename
 from PIL import Image
-from ..predict import predict_img
+from ..predict import predict_img, load_model_images
 import os
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = '/static/uploads'
+
+k=3
 
 bp = Blueprint('main', __name__)
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -20,7 +22,7 @@ def allowed_file(filename):
 #def index():
 #    return render_template('main/index.html', title='Recofish-PWA')
 
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route('/classify', methods=['GET', 'POST'])
 def submit_file():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -38,7 +40,18 @@ def submit_file():
             file.save(os.path.join(UPLOAD_FOLDER, filename))
             img_path = redirect(url_for('download_file', name=filename))
             img = Image.open(img_path)
-            return getclasses(img)  # or render_template('main/show_results.html', *args)
+            species = predict_img(img)
+
+            model_images: list[Image] = load_model_images(species)
+            predictions = {}
+            for i in range(k):
+                cur = species.reset_index().iloc[i]
+                predictions['ns' + str(i+1)] = cur['nom_scientifique']
+                predictions['nc' + str(i+1)] = cur['nom_commun']
+                predictions['prob' + str(i+1)] = cur['value']
+                predictions['img' + str(i+1)] = model_images[i]
+
+            return render_template('success.html', predictions=predictions)
     return render_template('main/index.html', title='Recofish-PWA')
 
 def getclasses(image: Image.Image):
