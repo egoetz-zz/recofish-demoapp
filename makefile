@@ -1,9 +1,9 @@
 .PHONY: environment
 environment:
-	pyenv install -s 3.10.0
-	pyenv uninstall --force flask-pwa
-	pyenv virtualenv 3.10.0 --force flask-pwa
-	pyenv local flask-pwa
+	pyenv install -s 3.11.4
+	pyenv uninstall --force recofish-demoapp
+	pyenv virtualenv 3.10.0 --force recofish-demoapp
+	pyenv local recofish-demoapp
 
 .PHONY: install
 install:
