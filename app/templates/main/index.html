@@ -5,19 +5,50 @@
     <img src="{{ url_for('static', filename='images/Diplodus cervinus.jpg') }}" alt="">
   </header>
   <main>
-    <h2>RECOFISH</h2>
-    <span>Bienvenue !</span>
-    <p>A partir d’une photo d’un poisson marin des côtes françaises ou de l’étal du poissonier,
-Recofish vous permet de l’identifier et de mieux connaître :<p>
-<ul>
-<li>Sa biologie
-<li>La reglementation sur sa pêche
-<li>L’état de santé de l’espèce
-<li>Les pratiques de pêche la concernant
-  </ul>
+      <div id="welcome">
+        <h2>RECOFISH</h2>
+        <span>Bienvenue !</span>
+        <p>A partir d’une photo d’un poisson marin des côtes françaises ou de l’étal du poissonnier, Recofish vous permet de l’identifier et de mieux connaître :<p>
+        <ul>
+            <li>Sa biologie
+            <li>L’état de santé de l’espèce
+            <li>La règlementation sur sa pêche
+            <li>Les pratiques de pêche la concernant
+      </ul>
+      </div>
+      <div id="capture">
+          <form enctype="multipart/form-data">
+              <input type="file" style='display:none;' name='image' id='select_image' accept="image/x-png,image/jpeg,image/gif"/>
+//                   onChange='callProcessImage(this, "Img");'/>
+              <input type=submit value='Soumettre une image'>
+          </form>
+      </div>
   </main>
   <footer>
     <button id="btnAdd">Install App</button>
   </footer>
 </article>
+{% endblock %}
+{% block scripts %}
+<script>
+function callProcessImage(fileInput, previewID) {
+    processSingleImage(fileInput, previewID);
+}
+
+function upload(): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+        const filePicker = document.querySelector('input');
+
+        if (!filePicker || !filePicker.files
+            || filePicker.files.length <= 0) {
+            reject('No file selected.');
+            return;
+        }
+        const myFile = filePicker.files[0];
+        console.log(myFile);
+
+        resolve();
+    });
+}
+</script>
 {% endblock %}

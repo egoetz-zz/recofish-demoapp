@@ -41,5 +41,6 @@ btnAdd.addEventListener('click', (e) => {
 });
 
 window.addEventListener('appinstalled', (evt) => {
-  app.logEvent('app', 'installed');
+  // app.logEvent('app', 'installed');
+  console.log('App installed.');
 });
