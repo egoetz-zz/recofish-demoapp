@@ -1,21 +1,21 @@
+from io import BytesIO
+
 from flask import (
     Blueprint, render_template
 )
 from flask import request, redirect, flash, url_for
+import requests
 from werkzeug.utils import secure_filename
 from PIL import Image
 from ..predict import predict_img, load_model_images
+from app import app
 import os
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-UPLOAD_FOLDER = 'static/uploads/'
 
 k = 3
 
 bp = Blueprint('main', __name__)
-
-
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -41,12 +41,13 @@ def submit_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             flash('Submitting file ' + filename)
-            img_path = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(img_path)
-            img = Image.open(img_path)
+            # img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # file.save(img_path)
+            # img = Image.open(img_path)
+            img = Image.open(BytesIO(file.read())).convert('RGB')
             species = predict_img(img)
 
-            model_images: list[Image] = load_model_images(species)
+            model_images: list[Image] = load_model_images(species, indices=(2, 3, 4))
             predictions = {}
             for i in range(k):
                 cur = species.reset_index().iloc[i]
@@ -55,7 +56,7 @@ def submit_file():
                 predictions['prob' + str(i + 1)] = cur['value']
                 predictions['img' + str(i + 1)] = model_images[i]
 
-            return render_template('success.html', predictions=predictions)
+            return render_template('success.html', predictions=predictions, img=filename)
     return render_template('main/index.html', title='Recofish-PWA')
 
 

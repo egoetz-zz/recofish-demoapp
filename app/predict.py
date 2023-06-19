@@ -1,7 +1,3 @@
-import glob
-from pathlib import Path
-from typing import List
-
 import numpy as np
 import pandas as pd
 import timm as timm
@@ -11,36 +7,48 @@ import torch
 import torchvision.transforms as transforms
 from PIL.Image import Image
 from matplotlib import pyplot as plt
+
+from flask import url_for
 import os
 # Linux: pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 from flask import flash
 
-PATH = ".."
-img_dir = Path(PATH + '/images')
-data_dir = Path(PATH + '/data')
 IMAGE_SIZE = 224
+NUM_CLASSES = 101
 
-bdd, device, model, data_transforms = None, None, None, None
+bdd = None
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+model = timm.create_model('efficientnet_b4', pretrained=True, num_classes=NUM_CLASSES)
+
+data_transforms = transforms.Compose([
+    transforms.Resize([IMAGE_SIZE, IMAGE_SIZE]),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+
+from app import app
 
 
 def init():
     global bdd, model, data_transforms, device
     try:
-        bdd = pd.read_csv(data_dir + "/species.csv", index_col='nom_scientifique')
-
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        model = timm.create_model('efficientnet_b4', pretrained=True, num_classes=101)
-        model.load_state_dict(torch.load(PATH + "/recofish_classification_model.pt", map_location=device))
+        #        bdd = pd.read_csv(url_for('static', filename='data/species.csv'), index_col='nom_scientifique')
+        # bdd = pd.read_csv(app.config['APPLICATION_ROOT'] + 'data/species.csv', index_col='nom_scientifique')
+        print(app.config['APPLICATION_ROOT'])
+        print(app.instance_path)
+        bdd = pd.read_csv(app.instance_path + '/../app/data/species.csv', index_col='nom_scientifique')
+        model.load_state_dict(
+            torch.load(app.instance_path + '/../app/recofish_classification_model.pt', map_location=device))
 
         model.eval()
 
-        data_transforms = transforms.Compose([
-            transforms.Resize([IMAGE_SIZE, IMAGE_SIZE]),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        ])
         return True
-    except:
+    except OSError as err:
+        print("OS error:", err)
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
         return False
 
 
@@ -50,7 +58,7 @@ plt.rc('font', size=8)
 # preprocess img and call the model to predict the k most likely classes
 # return: the image, the k species, sorted by likelihood
 def predict_img(img, k=3):
-    if model is None:
+    if bdd is None:
         init()
     image = data_transforms(img.convert('RGB')).to(device)
     output = model(image.unsqueeze(0))
@@ -80,8 +88,11 @@ def show_topk(img, k=3):
 # Display results
 
 
-def load_model_images(species):
-    images = [os.path.join(img_dir, sp['ID'], sp['class_img']) for sp in species.iterrows()]
+def load_model_images(species, indices=(2, 3, 4)):
+    images = []
+    for _, sp in species.iterrows():
+        images.append(
+            [app.instance_path + '/../app/static/images/' + str(sp['ID']) + '_' + str(indices[j]) for j in range(len(indices))])
     return images
 
 

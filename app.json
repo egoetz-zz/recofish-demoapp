@@ -1,13 +1,13 @@
 {
-    "name": "flask-pwa",
-    "repository": "https://github.com/umluizlima/flask-pwa",
+    "name": "recofish-demoapp",
+    "repository": "https://github.com/egoetz-zz/recofish-demoapp",
     "env": {
         "SECRET_KEY": {
-            "description": "Secret key for Flask.",
-            "value": "you-will-never-guesss"
+            "description": "Flask secret key",
+            "value": "you-will-never-guess"
         },
         "FLASK_ENV": {
-            "description": "Environment for Flask",
+            "description": "development or production",
             "value": "production"
         }
     },

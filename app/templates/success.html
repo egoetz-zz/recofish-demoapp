@@ -11,12 +11,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <title>Results Page</title>
 
-        <style type="text/css">
-            th{
-                text-align: center;
-                font-size: 20px;
-            }
-
+        <style>
             td{
                 text-align: center;
                 font-size: 18px;
@@ -25,50 +20,35 @@
     </head>
     <body>
         <div class = "second-main" style = "height: 100%; width : 100%;">
-            <nav>
-                <ul style = "padding-right: 2%;" class = "main-nav">
-                    <li><a href ="/">HomePage</a></li>                
-                </ul>
-               
-            </nav>
             <div class = "header">
-                <row style = "width: 100% ; display: flex; justify-content: center;">
+                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
                     <h3 class="header-text">Uploaded Image</h3>
-                </row>
-                <row style = "width: 100% ; display: flex; justify-content: center;">
+                </div>
+                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
                     <img class = "result-img" src={{url_for('static', filename = 'images/'+ img)}}>
-                </row>
+                </div>
             </div>
 
             <div class = "info">
-            
-                <row style = "width: 100% ; display: flex; justify-content: center;">
+                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
                     <h3 class = "header-text">Model Prediction</h3>
-                </row>
-                <row style = "width: 100%; display: flex; justify-content: center;">
-                    <table class="table-bordered text-light table-custom">
-                        <tr>
-                            <th>Rank</th>
-                            <th>Class</th>
-                            <th>Probability</th>
-                        </tr>
-                        <tr>
-                            <td>1st</td>
-                            <td>{{ predictions.class1 }}</td>
-                            <td>{{ predictions.prob1 }} %</td>
-                          </tr>
-                          <tr>
-                            <td>2nd</td>
-                            <td>{{ predictions.class2 }}</td>                                                         
-                            <td>{{ predictions.prob2 }} %</td>                                                      
-                        </tr>                                                                                                               
-                        <tr>
-                            <td>3rd</td>
-                            <td>{{ predictions.class3 }}</td>
-                            <td>{{ predictions.prob3 }} %</td>
-                          </tr>
-                    </table>
-                </row>
+                </div>
+                <form action="/species">
+                    <div class="row" style = "width: 100%; display: flex; justify-content: center;">
+                        <table class="table-bordered text-light table-custom">
+                            <tr>
+                                <td>src={{url_for('static', filename = 'images/'+ predictions.img1)}}</td>
+                                <td>src={{url_for('static', filename = 'images/'+ predictions.img2)}}</td>
+                                <td>src={{url_for('static', filename = 'images/'+ predictions.img3)}}</td>
+                            </tr>
+                            <tr>
+                                <td style = "width: 25%;"><input type="text" value="{{ predictions.ns1 }} {{ predictions.nc1}}" disabled></td>
+                                <td style = "width: 50%;">{{ predictions.prob1 }} %</td>
+                                <td><input type="submit" value="Valider" ></td>
+                              </tr>
+                        </table>
+                    </div>
+                </form>
             </div>
         </div>
     </body>
