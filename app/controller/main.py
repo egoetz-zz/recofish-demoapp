@@ -55,6 +55,7 @@ def submit_file():
                 predictions['nc' + str(i + 1)] = cur['nom_commun']
                 predictions['prob' + str(i + 1)] = cur['value']
                 predictions['img' + str(i + 1)] = model_images[i]
+                print("predictions['img'{}: {}]".format(i+1, predictions['img' + str(i + 1)]))
 
             return render_template('success.html', predictions=predictions, img=filename)
     return render_template('main/index.html', title='Recofish-PWA')
