@@ -17,9 +17,12 @@
       </ul>
       </div>
       <div id="capture">
-          <form method="POST" enctype="multipart/form-data" action="/classify">
-              <input type="file" name='image' id='select_image' accept="image/x-png,image/jpeg,image/gif"/>
-              <input type=submit value='Soumettre 1 image'>
+          <form name="classify" method="POST" enctype="multipart/form-data" action="/classify">
+              <label for='select_image' style="width:250px;">
+              <i class="glyphicon glyphicon-camera" style="font-size:60px;color:lightblue;text-shadow:2px 2px 4px #000000;"></i>
+              </label>
+              <input type="file" style='display:none;' name='image' id='select_image' accept="image/x-png,image/jpeg,image/gif" capture="environment" onChange='document.classify.submit();'/>
+<!--              <input type=submit value='Soumettre 1 image'> -->
           </form>
       </div>
   </main>
@@ -30,6 +33,14 @@
 {% endblock %}
 {% block scripts %}
 <script>
+
+cameraTrigger.onclick = function() {
+    cameraSensor.width = cameraView.videoWidth;
+    cameraSensor.height = cameraView.videoHeight;
+    cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
+    cameraOutput.src = cameraSensor.toDataURL("image/webp");
+    cameraOutput.classList.add("taken");
+};
 function callProcessImage(fileInput, previewID) {
     processSingleImage(fileInput, previewID);
 }
