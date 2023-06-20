@@ -53,7 +53,7 @@ def submit_file():
                 cur = species.reset_index().iloc[i]
                 predictions['ns' + str(i + 1)] = cur['nom_scientifique']
                 predictions['nc' + str(i + 1)] = cur['nom_commun']
-                predictions['prob' + str(i + 1)] = "{:.1f}".format(cur['value'])
+                predictions['prob' + str(i + 1)] = "{:2.1f}".format(cur['value'])
                 predictions['img' + str(i + 1) + '1'] = model_images[i][0]
                 predictions['img' + str(i + 1) + '2'] = model_images[i][1]
                 print("predictions['img'{}: {}]".format(i+1, predictions['img' + str(i + 1) + '1']))

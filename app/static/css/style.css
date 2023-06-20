@@ -147,3 +147,19 @@ a:hover {
     height: 200px;
   }
 }
+
+.table-custom
+{
+  border: 2px solid black;
+  width: 80%;
+}
+
+.species-proba
+{
+  border: 2px solid black;
+}
+.valid
+{
+  border: 2px solid black;
+  text-align: right;
+}

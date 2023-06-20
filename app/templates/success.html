@@ -7,36 +7,51 @@
         </div>
         <form id="sp1" name="sp1" action="/species">
             <div class="row" style = "width: 100%; display: flex; justify-content: center;">
-                <table class="table-bordered text-light table-custom">
-                    <tr>
+                <table class="text-light table-custom">
+                    <tr class="illustration">
                         <td><img src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
                         <td><img src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
                     </tr>
-                    <tr>
-                        <td style = "width: 25%;">
+                    <tr class="species-proba-valid">
+                        <td class="species-proba">
                             <input type="text" value="{{ predictions.ns1 }}" hidden>
-                            <i>{{ predictions.ns1 }}</i><br> {{ predictions.nc1}}
+                            <i>{{ predictions.ns1 }}</i><br> {{ predictions.nc1}} : {{ predictions.prob1 }} %
                         </td>
-                        <td style = "width: 50%;">{{ predictions.prob1 }} %</td>
-                        <td><input type="submit" value="Valider" ></td>
+                        <td class="valid"><input type="submit" value="Valider" ></td>
                       </tr>
                 </table>
             </div>
         </form>
         <form id="sp2" name="sp2" action="/species">
             <div class="row" style = "width: 100%; display: flex; justify-content: center;">
-                <table class="table-bordered text-light table-custom">
-                    <tr>
+                <table class="text-light table-custom">
+                    <tr class="illustration">
                         <td><img src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
                         <td><img src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
                     </tr>
-                    <tr>
-                        <td style = "width: 25%;">
+                    <tr class="species-proba-valid">
+                        <td class="species-proba">
                             <input type="text" value="{{ predictions.ns2 }}" hidden>
-                            <i>{{ predictions.ns2 }}</i><br> {{ predictions.nc2}}
+                            <i>{{ predictions.ns2 }}</i><br> {{ predictions.nc2}} : {{ predictions.prob2 }} %
                         </td>
-                        <td style = "width: 50%;">{{ predictions.prob2 }} %</td>
-                        <td><input type="submit" value="Valider" ></td>
+                        <td class="valid"><input type="submit" value="Valider" ></td>
+                      </tr>
+                </table>
+            </div>
+        </form>
+        <form id="sp3" name="sp3" action="/species">
+            <div class="row" style = "width: 100%; display: flex; justify-content: center;">
+                <table class="text-light table-custom">
+                    <tr class="illustration">
+                        <td><img src="{{url_for('static', filename = predictions.img31)}}" alt="{{predictions.img31}}"></td>
+                        <td><img src="{{url_for('static', filename = predictions.img32)}}" alt="{{predictions.img32}}"></td>
+                    </tr>
+                    <tr class="species-proba-valid">
+                        <td class="species-proba">
+                            <input type="text" value="{{ predictions.ns2 }}" hidden>
+                            <i>{{ predictions.ns3 }}</i><br> {{ predictions.nc3}} : {{ predictions.prob3 }} %
+                        </td>
+                        <td class="valid"><input type="submit" value="Valider" ></td>
                       </tr>
                 </table>
             </div>
