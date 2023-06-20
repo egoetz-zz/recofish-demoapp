@@ -47,15 +47,16 @@ def submit_file():
             img = Image.open(BytesIO(file.read())).convert('RGB')
             species = predict_img(img)
 
-            model_images: list[Image] = load_model_images(species, indices=(2, 3, 4))
+            model_images: list[list[Image]] = load_model_images(species, indices=(2, 3))
             predictions = {}
             for i in range(k):
                 cur = species.reset_index().iloc[i]
                 predictions['ns' + str(i + 1)] = cur['nom_scientifique']
                 predictions['nc' + str(i + 1)] = cur['nom_commun']
-                predictions['prob' + str(i + 1)] = cur['value']
-                predictions['img' + str(i + 1)] = model_images[i]
-                print("predictions['img'{}: {}]".format(i+1, predictions['img' + str(i + 1)]))
+                predictions['prob' + str(i + 1)] = "{:.1f}".format(cur['value'])
+                predictions['img' + str(i + 1) + '1'] = model_images[i][0]
+                predictions['img' + str(i + 1) + '2'] = model_images[i][1]
+                print("predictions['img'{}: {}]".format(i+1, predictions['img' + str(i + 1) + '1']))
 
             return render_template('success.html', predictions=predictions, img=filename)
     return render_template('main/index.html', title='Recofish-PWA')

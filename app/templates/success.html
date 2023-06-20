@@ -1,55 +1,46 @@
-<!DOCTYPE html>
-<html lang="eng">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href={{url_for('static' , filename = 'css/normalize.css')}}>
-        <link rel="stylesheet" href={{url_for('static' , filename = 'css/grid.css')}}>
-        <link rel='stylesheet' href={{url_for('static' , filename = 'css/styleSucc.css')}}>
-        
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,300&display=swap" rel="stylesheet" type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <title>Results Page</title>
-
-        <style>
-            td{
-                text-align: center;
-                font-size: 18px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class = "second-main" style = "height: 100%; width : 100%;">
-            <div class = "header">
-                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-                    <h3 class="header-text">Uploaded Image</h3>
-                </div>
-                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-                    <img class = "result-img" src={{url_for('static', filename = 'images/'+ img)}}>
-                </div>
-            </div>
-
-            <div class = "info">
-                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-                    <h3 class = "header-text">Model Prediction</h3>
-                </div>
-                <form action="/species">
-                    <div class="row" style = "width: 100%; display: flex; justify-content: center;">
-                        <table class="table-bordered text-light table-custom">
-                            <tr>
-                                <td>src={{url_for('static', filename = 'images/'+ predictions.img1)}}</td>
-                                <td>src={{url_for('static', filename = 'images/'+ predictions.img2)}}</td>
-                                <td>src={{url_for('static', filename = 'images/'+ predictions.img3)}}</td>
-                            </tr>
-                            <tr>
-                                <td style = "width: 25%;"><input type="text" value="{{ predictions.ns1 }} {{ predictions.nc1}}" disabled></td>
-                                <td style = "width: 50%;">{{ predictions.prob1 }} %</td>
-                                <td><input type="submit" value="Valider" ></td>
-                              </tr>
-                        </table>
-                    </div>
-                </form>
-            </div>
+{% extends "layout.html" %}
+{% block main %}
+<div class = "second-main" style = "height: 100%; width : 100%;">
+    <div class = "info">
+        <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
+            <h3 class = "header-text">Model Prediction</h3>
         </div>
-    </body>
-</html>
+        <form id="sp1" name="sp1" action="/species">
+            <div class="row" style = "width: 100%; display: flex; justify-content: center;">
+                <table class="table-bordered text-light table-custom">
+                    <tr>
+                        <td><img src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
+                        <td><img src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
+                    </tr>
+                    <tr>
+                        <td style = "width: 25%;">
+                            <input type="text" value="{{ predictions.ns1 }}" hidden>
+                            <i>{{ predictions.ns1 }}</i><br> {{ predictions.nc1}}
+                        </td>
+                        <td style = "width: 50%;">{{ predictions.prob1 }} %</td>
+                        <td><input type="submit" value="Valider" ></td>
+                      </tr>
+                </table>
+            </div>
+        </form>
+        <form id="sp2" name="sp2" action="/species">
+            <div class="row" style = "width: 100%; display: flex; justify-content: center;">
+                <table class="table-bordered text-light table-custom">
+                    <tr>
+                        <td><img src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
+                        <td><img src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
+                    </tr>
+                    <tr>
+                        <td style = "width: 25%;">
+                            <input type="text" value="{{ predictions.ns2 }}" hidden>
+                            <i>{{ predictions.ns2 }}</i><br> {{ predictions.nc2}}
+                        </td>
+                        <td style = "width: 50%;">{{ predictions.prob2 }} %</td>
+                        <td><input type="submit" value="Valider" ></td>
+                      </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

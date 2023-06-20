@@ -92,7 +92,7 @@ def load_model_images(species, indices=(2, 3, 4)):
     images = []
     for _, sp in species.iterrows():
         images.append(
-            [app.instance_path + '/../app/static/images/' + str(sp['ID']) + '_' + str(indices[j]) for j in range(len(indices))])
+            ['images/' + str(sp['ID']) + '/' + str(sp['ID']) + '_' + str(indices[j]) + '.jpg' for j in range(len(indices))])
     return images
 
 
