@@ -26,6 +26,10 @@ def allowed_file(filename):
 def index():
     return render_template('main/index.html', title='Recofish-PWA')
 
+@bp.route('/species')
+def show_info():
+    return render_template('main/species_info.html', title='Recofish-PWA')
+
 
 @bp.route('/classify', methods=['GET', 'POST'])
 def submit_file():
@@ -56,7 +60,6 @@ def submit_file():
                 predictions['prob' + str(i + 1)] = "{:2.1f}".format(cur['value'])
                 predictions['img' + str(i + 1) + '1'] = model_images[i][0]
                 predictions['img' + str(i + 1) + '2'] = model_images[i][1]
-                print("predictions['img'{}: {}]".format(i+1, predictions['img' + str(i + 1) + '1']))
 
             return render_template('success.html', predictions=predictions, img=filename)
     return render_template('main/index.html', title='Recofish-PWA')

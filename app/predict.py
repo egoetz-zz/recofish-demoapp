@@ -88,11 +88,15 @@ def show_topk(img, k=3):
 # Display results
 
 
-def load_model_images(species, indices=(2, 3, 4)):
+def load_model_images(species, indices=None):
     images = []
     for _, sp in species.iterrows():
-        images.append(
-            ['images/' + str(sp['ID']) + '/' + str(sp['ID']) + '_' + str(indices[j]) + '.jpg' for j in range(len(indices))])
+        path = 'images/' + str(sp['ID']) + '/'
+        if indices is None:
+            images.append([path + f for f in os.listdir(path)])
+        else:
+            images.append(
+                [path + str(sp['ID']) + '_' + str(indices[j]) + '.jpg' for j in range(len(indices))])
     return images
 
 
