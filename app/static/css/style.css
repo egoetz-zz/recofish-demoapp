@@ -198,6 +198,11 @@ a:hover {
   }
 }
 
+.pred {
+    height: 200px;
+    padding: 5px;
+}
+
 .table-custom
 {
   border: 0px solid black;
@@ -207,6 +212,8 @@ a:hover {
 .species-proba
 {
   border: 0px solid black;
+  font-weight: bold;
+    font-size: larger;
 }
 .valid
 {

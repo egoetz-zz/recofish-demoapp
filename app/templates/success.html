@@ -2,15 +2,12 @@
 {% block main %}
 <div class = "second-main" style = "height: 100%; width : 100%;">
     <div class = "info">
-        <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-            <h3 class = "header-text">Model Prediction</h3>
-        </div>
             <div class="row" style = "width: 100%; display: flex; justify-content: center;">
                 <form id="spx" name="sp1" action="/select_species" method="get">
                 <table class="text-light table-custom">
                     <tr class="illustration">
-                        <td><img src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
-                        <td><img src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
+                        <td><img class="pred" src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
+                        <td><img class="pred" src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
                     </tr>
                     <tr class="species-proba-valid">
                         <td class="species-proba">
@@ -22,8 +19,8 @@
                 </table>
                 <table class="text-light table-custom">
                     <tr class="illustration">
-                        <td><img src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
-                        <td><img src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
+                        <td><img class="pred" src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
+                        <td><img class="pred" src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
                     </tr>
                     <tr class="species-proba-valid">
                         <td class="species-proba">
@@ -35,8 +32,8 @@
                 </table>
                 <table class="text-light table-custom">
                     <tr class="illustration">
-                        <td><img src="{{url_for('static', filename = predictions.img31)}}" alt="{{predictions.img31}}"></td>
-                        <td><img src="{{url_for('static', filename = predictions.img32)}}" alt="{{predictions.img32}}"></td>
+                        <td><img class="pred" src="{{url_for('static', filename = predictions.img31)}}" alt="{{predictions.img31}}"></td>
+                        <td><img class="pred" src="{{url_for('static', filename = predictions.img32)}}" alt="{{predictions.img32}}"></td>
                     </tr>
                     <tr class="species-proba-valid">
                         <td class="species-proba">
@@ -47,7 +44,7 @@
                       </tr>
                 </table>
                 <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-                    <input class="btnValid" type="submit" style="" name="sp_no" value="Je ne reconnais pas mon poisson !" >
+                    <input class="btnValid" type="submit" style="" name="sp_no" value="Je ne reconnais pas mon poisson" >
                 </div>
                 </form>
             </div>
