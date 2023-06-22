@@ -22,7 +22,10 @@ def allowed_file(filename):
 
 @bp.route('/')
 def index():
-    return render_template('main/index.html', title='Recofish-PWA')
+    if False:
+        return render_template('main/index.html', title='Recofish-PWA')
+    else:
+        return show_info(55)
 
 @bp.route('/select_species')
 def select():
