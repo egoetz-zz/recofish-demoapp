@@ -1,22 +1,24 @@
+import flask
 import numpy as np
 import pandas as pd
 import timm as timm
-from PIL import Image
 
 import torch
 import torchvision.transforms as transforms
-from PIL.Image import Image
-from matplotlib import pyplot as plt
 
-from flask import url_for
 import os
 # Linux: pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-from flask import flash
+# from flask import flash
 
 IMAGE_SIZE = 224
 NUM_CLASSES = 101
 
-bdd = None
+WORMS_BASE_URl = "https://www.marinespecies.org/aphia.php?p=taxdetails&id="  # Add id_worms from species table
+DORIS_BASE_URL = "https://doris.ffessm.fr/ref/specie/"  # Add id_doris from species table
+
+bdd: pd.DataFrame = None
+# bdd = pd.read_csv(app.config['APPLICATION_ROOT'] + 'data/species.csv', index_col='nom_scientifique')
+families: pd.DataFrame = None
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -28,19 +30,16 @@ data_transforms = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-from app import app
-
 
 def init():
-    global bdd, model, data_transforms, device
+    global bdd, families, model, data_transforms, device
     try:
-        #        bdd = pd.read_csv(url_for('static', filename='data/species.csv'), index_col='nom_scientifique')
-        # bdd = pd.read_csv(app.config['APPLICATION_ROOT'] + 'data/species.csv', index_col='nom_scientifique')
-        print(app.config['APPLICATION_ROOT'])
-        print(app.instance_path)
-        bdd = pd.read_csv(app.instance_path + '/../app/data/species.csv', index_col='nom_scientifique')
+        app = flask.current_app
+        root_path = os.path.dirname(app.instance_path)
+        bdd = pd.read_csv(root_path + '/app/data/species.csv', index_col='nom_scientifique')
+        families = pd.read_csv(root_path + '/app/data/families.csv', index_col='ID')
         model.load_state_dict(
-            torch.load(app.instance_path + '/../app/recofish_classification_model.pt', map_location=device))
+            torch.load(root_path + '/app/recofish_classification_model.pt', map_location=device))
 
         model.eval()
 
@@ -50,9 +49,6 @@ def init():
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         return False
-
-
-plt.rc('font', size=8)
 
 
 # preprocess img and call the model to predict the k most likely classes
@@ -70,39 +66,54 @@ def predict_img(img, k=3):
     return species
 
 
-def show_topk(img, k=3):
-    fig = plt.figure(figsize=(10, 7))
-    columns, rows = k, 1
-
-    with torch.no_grad():
-        species = predict_img(img)
-        model_images: list[Image] = load_model_images(species)
-        for i in range(k):
-            cur = species.reset_index().iloc[i]
-            fig.add_subplot(rows, columns, i + 1)
-            plt.imshow(np.asarray(model_images[i]))
-            plt.axis('off')
-            plt.title("{} ({}) : {:.1f}%".format(cur['nom_scientifique'], cur['nom_commun'], cur['value']))
-
-
-# Display results
-
-
 def load_model_images(species, indices=None):
     images = []
-    for _, sp in species.iterrows():
-        path = 'images/' + str(sp['ID']) + '/'
+    root_path = os.path.dirname(flask.current_app.instance_path)
+    for sp in species:
+        path = 'images/' + str(sp) + '/'
         if indices is None:
-            images.append([path + f for f in os.listdir(path)])
+            images.append([path + f for f in os.listdir(root_path + '/app/static/' + path)])
         else:
             images.append(
-                [path + str(sp['ID']) + '_' + str(indices[j]) + '.jpg' for j in range(len(indices))])
+                [path + str(sp) + '_' + str(indices[j]) + '.jpg' for j in range(len(indices))])
     return images
 
 
-# Display species info
-WORMS_BASE_URl = "https://www.marinespecies.org/aphia.php?p=taxdetails&id="  # Add id_worms from species table
-DORIS_BASE_URL = "https://doris.ffessm.fr/ref/specie/"  # Add id_doris from species table
+fields_left = ['ID', 'nom_commun', 'autres_noms', 'id_famille',
+              'taille_adulte_₋', 'taille_adulte_₊', 'profondeur_habituelle_-', 'profondeur_habituelle_₊', 'Colonne_d_eau',
+              'reglementation', 'danger', 'mode_de_vie',
+              'entrainement_modele', 'A_entrainer', 'label', 'nb_images'
+              'Cotes_françaises', 'Mediterranée', 'Atlantique', 'Manche', 'Mer du Nord',
+              'Pêche_commerciale', 'IUCN_red_list',
+              'citation_ouvrages', 'citation_doris', 'lien_fiche_doris']
 
-# Pour les familles
-# familles = pd.read_csv(data_dir +"/familles.csv", index_col='ID')
+
+def fetch_species_info(id):
+    if bdd is None:
+        init()
+    full_dict = bdd.loc[bdd.ID == id].iloc[0].dropna().to_dict()
+    dict_map = {'bio': ['taille_adulte_₋', 'taille_adulte_₊', 'profondeur_habituelle_-', 'profondeur_habituelle_₊', 'Colonne_d_eau', 'danger', 'mode_de_vie'],
+                'reglementation': [],
+                'pratiques': []}
+    info_dict = {}
+    for key, fields in dict_map.items():
+        info_dict[key] = {}
+        for field in fields:
+            if full_dict.get(field):
+                fld = field.replace('_', ' ').capitalize()
+                if fld.endswith('₊'):
+                    fld = fld[:-2]
+                    info_dict[key][fld] = "{} - {}".format(info_dict[key].get(fld, ""), full_dict[field])
+                elif fld.endswith('-') or fld.endswith('₋'):
+                    fld = fld[:-2]
+                    info_dict[key][fld] = "{}{}".format(full_dict[field], info_dict[key].get(fld, ""))
+                else:
+                    info_dict[key][fld] = full_dict[field]
+                print("   field=", field, " -> ", fld)
+                print("   ", info_dict)
+        if info_dict[key].get("Profondeur habituelle") is not None:
+            info_dict[key]["Profondeur habituelle"] += " m"
+        elif info_dict[key].get("Taille adulte") is not None:
+            info_dict[key]["Profondeur habituelle"] += " cm"
+    info_dict['bio']['famille'] = families.iloc[full_dict['id_famille']]
+    return info_dict

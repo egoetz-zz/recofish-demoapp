@@ -172,6 +172,22 @@ a:hover {
   border: 0px solid black;
   text-align: right;
 }
+
+.btnValid
+{
+  background-color: dodgerblue;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
 #camera--trigger
 {
     width: 200px;

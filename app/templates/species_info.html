@@ -1,53 +1,78 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block main %}
+
 <div class = "second-main" style = "height: 100%; width : 100%;">
     <div class = "info">
-        <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-            <h3 class = "header-text">{{ title}}</h3>
-        </div>
-        <form id="spx" name="sp1" action="/species">
-            <div class="row" style = "width: 100%; display: flex; justify-content: center;">
-                <table class="text-light table-custom">
-                    <tr class="illustration">
-                        <td><img src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
-                        <td><img src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
-                    </tr>
-                    <tr class="species-proba-valid">
-                        <td class="species-proba">
-                            <input type="text" value="{{ predictions.ns1 }}" hidden>
-                            <i>{{ predictions.ns1 }}</i><br> {{ predictions.nc1}} : {{ predictions.prob1 }} %
-                        </td>
-                        <td class="valid"><input type="submit" name="sp1" value="Oui, c'est mon poisson !" ></td>
-                      </tr>
-                </table>
-                <table class="text-light table-custom">
-                    <tr class="illustration">
-                        <td><img src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
-                        <td><img src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
-                    </tr>
-                    <tr class="species-proba-valid">
-                        <td class="species-proba">
-                            <input type="text" value="{{ predictions.ns2 }}" hidden>
-                            <i>{{ predictions.ns2 }}</i><br> {{ predictions.nc2}} : {{ predictions.prob2 }} %
-                        </td>
-                        <td class="valid"><input type="submit" name="sp2" value="Oui, c'est mon poisson !" ></td>
-                      </tr>
-                </table>
-                <table class="text-light table-custom">
-                    <tr class="illustration">
-                        <td><img src="{{url_for('static', filename = predictions.img31)}}" alt="{{predictions.img31}}"></td>
-                        <td><img src="{{url_for('static', filename = predictions.img32)}}" alt="{{predictions.img32}}"></td>
-                    </tr>
-                    <tr class="species-proba-valid">
-                        <td class="species-proba">
-                            <input type="text" value="{{ predictions.ns2 }}" hidden>
-                            <i>{{ predictions.ns3 }}</i><br> {{ predictions.nc3}} : {{ predictions.prob3 }} %
-                        </td>
-                        <td class="valid"><input type="submit" name="sp3" value="Oui, c'est mon poisson !" ></td>
-                      </tr>
-                </table>
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+              <div class="numbertext">1 / 3</div>
+              <img src={{ images.img1 }} style="width:100%">
+              <div class="text"></div>
             </div>
-        </form>
+
+            <div class="mySlides fade">
+              <div class="numbertext">2 / 3</div>
+              <img src={{ images.img2 }} style="width:100%">
+              <div class="text"></div>
+            </div>
+
+            <div class="mySlides fade">
+              <div class="numbertext">3 / 3</div>
+              <img src={{ images.img3 }} style="width:100%">
+              <div class="text"></div>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
+
+            </div>
+            <br>
+
+            <div style="text-align:center">
+              <span class="dot" onclick="currentSlide(1)"></span>
+              <span class="dot" onclick="currentSlide(2)"></span>
+              <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
+
+            <div class="species" style = "width: 100% ; display: flex; justify-content: center;">
+                <h3 class = "header-text"><i>{{ info.ns}}</i><br>{{ info.nc}}</h3>
+            </div>
+            <div class="sp-info-section">Biologie et conservation</div>
+            <div class="sp-info">{{ info.bio }} </div>
+            <div class="sp-info-section">Réglementation pêche amateur</div>
+            <div class="sp-info">{{ info.reglementation }} </div>
+            <div class="sp-info-section">Pratiques de pêche professionnelle</div>
+            <div class="sp-info">{{ info.pratiques }} </div>
+        </div>
     </div>
 </div>
+<script>
+let slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+}
+</script>
+
 {% endblock %}
