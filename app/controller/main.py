@@ -12,7 +12,6 @@ K_TOP = 3  # Number of best predictions shown
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FIXED_NUMBER_OF_SLIDER_IMAGES = 3  # temporary code limitation. Should become dynamic
 
-
 bp = Blueprint('main', __name__)
 
 def allowed_file(filename):
