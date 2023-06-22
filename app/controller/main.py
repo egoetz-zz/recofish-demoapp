@@ -21,7 +21,7 @@ def allowed_file(filename):
 
 @bp.route('/')
 def index():
-    if False:
+    if True:
         return render_template('main/index.html', title='Recofish-PWA')
     else:
         return show_info(55)
