@@ -63,7 +63,7 @@ def submit_file():
             img = Image.open(BytesIO(file.read())).convert('RGB')
             species = predict_img(img)
 
-            model_images: list[list[Image]] = load_model_images(species['ID'].tolist(), indices=(2, 3))
+            model_images: list[list[Image]] = load_model_images(species.index.tolist(), indices=(2, 3))
             predictions = {}
             for i in range(K_TOP):
                 cur = species.reset_index().iloc[i]

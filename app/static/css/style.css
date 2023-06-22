@@ -73,6 +73,47 @@ article > footer {
   border-top: 1px solid #efefef;
 }
 
+.sp-info-section {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background-color: dodgerblue;
+}
+
+.properties {
+    width: 100%;
+}
+
+.property {
+    border-bottom: 1px black solid;
+}
+
+.property-key {
+    font-weight: bold;
+    text-align: left;
+    padding: 5px;
+}
+
+.property-value {
+    text-align: right;
+    padding: 5px;
+}
+
+.sp-names {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background-color: black;
+    color: white;
+}
+
+.sp-info {
+    display: block;
+    width: 100%;
+}
+
 .btn {
   background-color: DarkBlue;
   border: none;

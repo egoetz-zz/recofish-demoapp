@@ -36,7 +36,7 @@ def init():
     try:
         app = flask.current_app
         root_path = os.path.dirname(app.instance_path)
-        bdd = pd.read_csv(root_path + '/app/data/species.csv', index_col='nom_scientifique')
+        bdd = pd.read_csv(root_path + '/app/data/species.csv', index_col='ID')  # ex: nom_scientifique
         families = pd.read_csv(root_path + '/app/data/families.csv', index_col='ID')
         model.load_state_dict(
             torch.load(root_path + '/app/recofish_classification_model.pt', map_location=device))
@@ -62,7 +62,7 @@ def predict_img(img, k=3):
     # print(zip(vals.numpy()[0], preds.numpy()[0]))
     species = pd.DataFrame(vals.numpy()[0], index=preds.numpy()[0], columns=["value"]) \
         .merge(bdd, how='left', left_index=True, right_on='label')
-    # .set_index('nom_scientifique')
+    # .set_index('ID')
     return species
 
 
@@ -91,29 +91,44 @@ fields_left = ['ID', 'nom_commun', 'autres_noms', 'id_famille',
 def fetch_species_info(id):
     if bdd is None:
         init()
-    full_dict = bdd.loc[bdd.ID == id].iloc[0].dropna().to_dict()
-    dict_map = {'bio': ['taille_adulte_₋', 'taille_adulte_₊', 'profondeur_habituelle_-', 'profondeur_habituelle_₊', 'Colonne_d_eau', 'danger', 'mode_de_vie'],
+    full_dict = bdd.loc[bdd.index == id].iloc[0].dropna().to_dict()
+    dict_map = {'bio': ['taille_adulte_min', 'taille_adulte_max', 'profondeur_habituelle_min', 'profondeur_habituelle_max', 'Colonne_d_eau', 'danger', 'mode_de_vie'],
                 'reglementation': [],
                 'pratiques': []}
-    info_dict = {}
+    info_dict = {'bio': {}, 'reglementation': {}, 'pratiques': {}}
+    info_dict['bio']['Famille'] = families.at[full_dict['id_famille'], "famille"]
     for key, fields in dict_map.items():
-        info_dict[key] = {}
         for field in fields:
-            if full_dict.get(field):
+            print("Processing field '", field, "'")
+            if full_dict.get(field) is not None:
                 fld = field.replace('_', ' ').capitalize()
-                if fld.endswith('₊'):
-                    fld = fld[:-2]
-                    info_dict[key][fld] = "{} - {}".format(info_dict[key].get(fld, ""), full_dict[field])
-                elif fld.endswith('-') or fld.endswith('₋'):
-                    fld = fld[:-2]
-                    info_dict[key][fld] = "{}{}".format(full_dict[field], info_dict[key].get(fld, ""))
+                if field.endswith('_max'):
+                    fld = fld[:-4]
+                    info_dict[key][fld] = "{}{}".format(info_dict[key].get(fld, " - "), full_dict[field])
+                    print(fld, ' +')
+                elif field.endswith('_min'):
+                    fld = fld[:-4]
+                    info_dict[key][fld] = "{}{}".format(full_dict[field], info_dict[key].get(fld, " - "))
+                    print(fld, ' -')
                 else:
                     info_dict[key][fld] = full_dict[field]
+                    print(fld, ' 0')
                 print("   field=", field, " -> ", fld)
                 print("   ", info_dict)
-        if info_dict[key].get("Profondeur habituelle") is not None:
-            info_dict[key]["Profondeur habituelle"] += " m"
-        elif info_dict[key].get("Taille adulte") is not None:
-            info_dict[key]["Profondeur habituelle"] += " cm"
-    info_dict['bio']['famille'] = families.iloc[full_dict['id_famille']]
-    return info_dict
+            else:
+                print("Field '", field, "' ABSENT")
+    if info_dict['bio'].get("Profondeur habituelle") is not None:
+        info_dict['bio']["Profondeur habituelle"] += " m"
+    if info_dict['bio'].get("Taille adulte") is not None:
+        info_dict['bio']["Taille adulte"] += " cm"
+    html = {}
+    for key, fields in info_dict.items():
+        concat = ""
+        for k, v in fields.items():
+            concat += "<tr class='property'><td class='property-key'>{}</td><td class='property-value'>{}</td></tr>".format(
+                k, v)
+        html[key] = "<table class='properties'>{}</table>".format(concat)
+    html['ns'] = full_dict['nom_scientifique']
+    html['nc'] = full_dict['nom_commun']
+    print(html)
+    return html
