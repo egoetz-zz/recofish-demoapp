@@ -77,7 +77,7 @@ article > footer {
     display: block;
     width: 100%;
     text-align: center;
-    padding: 20px;
+    padding: 10px;
     background-color: dodgerblue;
 }
 
@@ -104,7 +104,7 @@ article > footer {
     display: block;
     width: 100%;
     text-align: center;
-    padding: 20px;
+    padding: 10px;
     background-color: black;
     color: white;
 }
@@ -198,6 +198,15 @@ a:hover {
   }
 }
 
+.nav {
+    float: left;
+    padding: 0px;
+}
+
+.nav-logo {
+    height: 50px;
+}
+
 .pred {
     height: 200px;
     padding: 5px;
@@ -206,19 +215,29 @@ a:hover {
 .table-custom
 {
   border: 0px solid black;
-  width: 80%;
+  width: 100%;
 }
+
+ .illustr-right {
+  text-align: right;
+ }
+
+ .illustr-left {
+  text-align: left;
+ }
 
 .species-proba
 {
   border: 0px solid black;
   font-weight: bold;
     font-size: larger;
+    padding-left: 5px;
 }
 .valid
 {
   border: 0px solid black;
   text-align: right;
+    padding-right: 5px;
 }
 
 .btnValid
@@ -257,3 +276,40 @@ a:hover {
     width: 100%;
     text-align: center;
 }
+
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+    margin-bottom: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.i-nav {
+    font-size: xx-large;
+    background-color: dodgerblue;
+    padding: 10px;
+}
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  display: block;
+  color: dodgerblue;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add an active class to highlight the current page */
+.topnav a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+

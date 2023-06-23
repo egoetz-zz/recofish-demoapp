@@ -3,20 +3,29 @@ from io import BytesIO
 from flask import (
     Blueprint, render_template
 )
-from flask import request, redirect, flash
+from flask import request, redirect, Response, flash
 from werkzeug.utils import secure_filename
 from PIL import Image
 from ..predict import predict_img, load_model_images, fetch_species_info
 
-K_TOP = 3  # Number of best predictions shown
+K_TOP = 3  # Number of predictions shown
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FIXED_NUMBER_OF_SLIDER_IMAGES = 3  # temporary code limitation. Should become dynamic
 
 bp = Blueprint('main', __name__)
 
+
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@bp.after_request
+def set_response_headers(response):
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 
 @bp.route('/')
@@ -26,9 +35,10 @@ def index():
     else:
         return show_info(55)
 
+
 @bp.route('/select_species')
 def select():
-    for i in range(1, K_TOP):
+    for i in range(1, K_TOP+1):
         if request.args.get('chose_' + str(i)) is not None:
             return redirect('/species/' + request.args['id' + str(i)])
 
@@ -41,7 +51,7 @@ def show_info(id):
         images.append(images[0])
     images2 = {}
     for i in range(FIXED_NUMBER_OF_SLIDER_IMAGES):
-        images2['img' + str(i+1)] = images[i]
+        images2['img' + str(i + 1)] = images[i]
     return render_template('species_info.html', info=infos, images=images2)
 
 
