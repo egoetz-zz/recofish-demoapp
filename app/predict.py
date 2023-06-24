@@ -84,7 +84,7 @@ fields_left = ['ID', 'nom_commun', 'autres_noms', 'id_famille',
               'entrainement_modele', 'A_entrainer', 'label', 'nb_images'
               'Cotes_françaises', 'Mediterranée', 'Atlantique', 'Manche', 'Mer du Nord',
               'Pêche_commerciale', 'IUCN_red_list',
-              'citation_ouvrages', 'citation_doris', 'lien_fiche_doris']
+              'citation_ouvrages', 'citation_doris']
 
 
 def fetch_species_info(id):
@@ -93,27 +93,22 @@ def fetch_species_info(id):
     full_dict = bdd.loc[bdd.index == id].iloc[0].dropna().to_dict()
     dict_map = {'bio': ['taille_adulte_min', 'taille_adulte_max', 'profondeur_habituelle_min', 'profondeur_habituelle_max', 'Colonne_d_eau', 'danger', 'mode_de_vie'],
                 'reglementation': [],
-                'pratiques': []}
-    info_dict = {'bio': {}, 'reglementation': {}, 'pratiques': {}}
+                'pratiques': [],
+                'sources_externes': ['id_DORIS']}
+    info_dict = {'bio': {}, 'reglementation': {}, 'pratiques': {}, 'sources_externes': {}}
     info_dict['bio']['Famille'] = families.at[full_dict['id_famille'], "famille"]
     for key, fields in dict_map.items():
         for field in fields:
-            print("Processing field '", field, "'")
             if full_dict.get(field) is not None:
                 fld = field.replace('_', ' ').capitalize()
                 if field.endswith('_max'):
                     fld = fld[:-4]
                     info_dict[key][fld] = "{}{}".format(info_dict[key].get(fld, " - "), full_dict[field])
-                    print(fld, ' +')
                 elif field.endswith('_min'):
                     fld = fld[:-4]
                     info_dict[key][fld] = "{}{}".format(full_dict[field], info_dict[key].get(fld, " - "))
-                    print(fld, ' -')
                 else:
                     info_dict[key][fld] = full_dict[field]
-                    print(fld, ' 0')
-                print("   field=", field, " -> ", fld)
-                print("   ", info_dict)
             else:
                 print("Field '", field, "' ABSENT")
     if info_dict['bio'].get("Profondeur habituelle") is not None:
@@ -124,6 +119,11 @@ def fetch_species_info(id):
     for key, fields in info_dict.items():
         concat = ""
         for k, v in fields.items():
+            if k == "Id doris":
+                k = "Lien vers fiche DORIS"
+                v_txt = str(v) if v is not None else "Non référencé"
+                v_id = str(v) if v is not None else ""
+                v = "<a href='{}{}'>{}</a>".format(DORIS_BASE_URL, v_id, v_txt)
             concat += "<tr class='property'><td class='property-key'>{}</td><td class='property-value'>{}</td></tr>".format(
                 k, v)
         html[key] = "<table class='properties'>{}</table>".format(concat)
