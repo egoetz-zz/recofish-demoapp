@@ -30,10 +30,7 @@ def set_response_headers(response):
 
 @bp.route('/')
 def index():
-    if True:
-        return render_template('main/index.html', title='Recofish-PWA')
-    else:
-        return show_info(55)
+    return render_template('main/index.html', title='Recofish-PWA')
 
 
 @bp.route('/select_species')
@@ -41,6 +38,7 @@ def select():
     for i in range(1, K_TOP+1):
         if request.args.get('chose_' + str(i)) is not None:
             return redirect('/species/' + request.args['id' + str(i)])
+    return index()
 
 
 @bp.route('/species/<id>')

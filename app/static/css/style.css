@@ -73,12 +73,16 @@ article > footer {
   border-top: 1px solid #efefef;
 }
 
+.home {
+    margin-left: 2em;
+}
+
 .sp-info-section {
     display: block;
     width: 100%;
     text-align: center;
     padding: 10px;
-    background-color: dodgerblue;
+    background-color: #0AB2DE;
 }
 
 .properties {
@@ -242,7 +246,7 @@ a:hover {
 
 .btnValid
 {
-  background-color: dodgerblue;
+  background-color: #0AB2DE;
   border: none;
   border-radius: 8px;
   color: white;
@@ -287,14 +291,14 @@ a:hover {
 
 .i-nav {
     font-size: xx-large;
-    background-color: dodgerblue;
+    background-color: #0AB2DE;
     padding: 10px;
 }
 /* Style the links inside the navigation bar */
 .topnav a {
   float: left;
   display: block;
-  color: dodgerblue;
+  color: #0AB2DE;
   text-align: center;
   text-decoration: none;
   font-size: 16px;
