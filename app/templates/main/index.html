@@ -5,7 +5,7 @@
   </header>
   <main>
       <div id="welcome">
-        <h2>RECOFISH</h2>
+        <h2>{{ title}} v{{ version}}</h2>
         <span style="font-weight:700;">Bienvenue !</span>
         <p>A partir d’une photo d’un poisson marin des côtes françaises ou de l’étal du poissonnier, Recofish vous permet de l’identifier et de mieux connaître :<p>
         <ul class="home">
@@ -29,6 +29,7 @@
   </footer>
 {% endblock %}
 {% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
 <script>
 
 cameraTrigger.onclick = function() {
@@ -38,6 +39,7 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/webp");
     cameraOutput.classList.add("taken");
 };
+
 function callProcessImage(fileInput, previewID) {
     processSingleImage(fileInput, previewID);
 }

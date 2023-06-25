@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 from ..predict import predict_img, load_model_images, fetch_species_info
 
+VERSION = 1.0
 K_TOP = 3  # Number of predictions shown
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FIXED_NUMBER_OF_SLIDER_IMAGES = 3  # temporary code limitation. Should become dynamic
@@ -30,23 +31,27 @@ def set_response_headers(response):
 
 @bp.route('/')
 def index():
-    return render_template('main/index.html', title='Recofish-PWA')
+    return render_template('main/index.html', title='Recofish progressive web app', version=VERSION)
 
 
 @bp.route('/select_species')
 def select():
+    # Form has 3 + 1 validation buttons -> check which was hit
     for i in range(1, K_TOP+1):
         if request.args.get('chose_' + str(i)) is not None:
             return redirect('/species/' + request.args['id' + str(i)])
-    return index()
+    return index()  # None of the species were validated -> return Home
 
 
 @bp.route('/species/<id>')
 def show_info(id):
     infos = fetch_species_info(int(id))
     images = load_model_images([int(id)])[0]
-    while len(images) < FIXED_NUMBER_OF_SLIDER_IMAGES:  # for some species, we have less than 3 illustrating images
-        images.append(images[0])
+    # for some species, we have less than the  illustrating images
+    i = 0
+    while len(images) < FIXED_NUMBER_OF_SLIDER_IMAGES:
+        images.append(images[i])
+        i += 1
     images2 = {}
     for i in range(FIXED_NUMBER_OF_SLIDER_IMAGES):
         images2['img' + str(i + 1)] = images[i]

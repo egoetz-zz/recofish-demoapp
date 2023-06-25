@@ -2,52 +2,48 @@
 {% block main %}
 <div class = "second-main" style = "height: 100%; width : 100%;">
     <div class = "info">
-            <div class="row" style = "width: 100%; display: flex; justify-content: center;">
-                <form id="spx" name="sp1" action="/select_species" method="get">
-                <table class="text-light table-custom">
-                    <tr class="illustration">
-                        <td class="illustr-left"><img class="pred" src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
-                        <td class="illustr-right"><img class="pred" src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
-                    </tr>
-                    <tr class="species-proba-valid">
-                        <td class="species-proba">
-                            <input type="text" name="id1" value="{{ predictions.id1 }}" hidden>
-                            <i>{{ predictions.ns1 }}</i><br> {{ predictions.nc1}} : {{ predictions.prob1 }} %
-                        </td>
-                        <td class="valid"><input class="btnValid" type="submit" name="chose_1" value="Oui, c'est mon poisson !" ></td>
-                      </tr>
-                </table>
-                <table class="text-light table-custom">
-                    <tr class="illustration">
-                        <td class="illustr-left"><img class="pred" src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
-                        <td class="illustr-right"><img class="pred" src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
-                    </tr>
-                    <tr class="species-proba-valid">
-                        <td class="species-proba">
-                            <input type="text" name="id2" value="{{ predictions.id2 }}" hidden>
-                            <i>{{ predictions.ns2 }}</i><br> {{ predictions.nc2}} : {{ predictions.prob2 }} %
-                        </td>
-                        <td class="valid"><input class="btnValid" type="submit" name="chose_2" value="Oui, c'est mon poisson !" ></td>
-                      </tr>
-                </table>
-                <table class="text-light table-custom">
-                    <tr class="illustration">
-                        <td class="illustr-left"><img class="pred" src="{{url_for('static', filename = predictions.img31)}}" alt="{{predictions.img31}}"></td>
-                        <td class="illustr-right"><img class="pred" src="{{url_for('static', filename = predictions.img32)}}" alt="{{predictions.img32}}"></td>
-                    </tr>
-                    <tr class="species-proba-valid">
-                        <td class="species-proba">
-                            <input type="text" name="id3" value="{{ predictions.id3 }}" hidden>
-                            <i>{{ predictions.ns3 }}</i><br> {{ predictions.nc3}} : {{ predictions.prob3 }} %
-                        </td>
-                        <td class="valid"><input class="btnValid" type="submit" name="chose_3" value="Oui, c'est mon poisson !" ></td>
-                      </tr>
-                </table>
-                <div class="row" style = "width: 100% ; display: flex; justify-content: center;">
-                    <input class="btnValid" type="submit" style="" name="sp_no" value="Je ne reconnais pas mon poisson" >
-                </div>
-                </form>
-            </div>
+        <form id="spx" name="sp1" action="/select_species" method="get">
+        <table class="text-light table-custom">
+            <tr class="illustration">
+                <td class="illustr-left"><img class="pred" src="{{url_for('static', filename = predictions.img11)}}" alt="{{predictions.img11}}"></td>
+                <td class="illustr-right"><img class="pred" src="{{url_for('static', filename = predictions.img12)}}" alt="{{predictions.img12}}"></td>
+            </tr>
+            <tr class="species-proba-valid">
+                <td class="species-proba">
+                    <input type="text" name="id1" value="{{ predictions.id1 }}" hidden>
+                    <i>{{ predictions.ns1 }}</i><br>{{ predictions.nc1}}<br>{{ predictions.prob1 }}&nbsp;%
+                </td>
+                <td class="valid"><input class="btnValid" type="submit" name="chose_1" value="Oui, c'est mon poisson !" ></td>
+              </tr>
+        </table>
+        <table class="text-light table-custom">
+            <tr class="illustration">
+                <td class="illustr-left"><img class="pred" src="{{url_for('static', filename = predictions.img21)}}" alt="{{predictions.img21}}"></td>
+                <td class="illustr-right"><img class="pred" src="{{url_for('static', filename = predictions.img22)}}" alt="{{predictions.img22}}"></td>
+            </tr>
+            <tr class="species-proba-valid">
+                <td class="species-proba">
+                    <input type="text" name="id2" value="{{ predictions.id2 }}" hidden>
+                    <i>{{ predictions.ns2 }}</i><br> {{ predictions.nc2}}<br>{{ predictions.prob2 }}&nbsp;%
+                </td>
+                <td class="valid"><input class="btnValid" type="submit" name="chose_2" value="Oui, c'est mon poisson !" ></td>
+              </tr>
+        </table>
+        <table class="text-light table-custom">
+            <tr class="illustration">
+                <td class="illustr-left"><img class="pred" src="{{url_for('static', filename = predictions.img31)}}" alt="{{predictions.img31}}"></td>
+                <td class="illustr-right"><img class="pred" src="{{url_for('static', filename = predictions.img32)}}" alt="{{predictions.img32}}"></td>
+            </tr>
+            <tr class="species-proba-valid">
+                <td class="species-proba">
+                    <input type="text" name="id3" value="{{ predictions.id3 }}" hidden>
+                    <i>{{ predictions.ns3 }}</i><br> {{ predictions.nc3}}<br>{{ predictions.prob3 }}&nbsp;%
+                </td>
+                <td class="valid"><input class="btnValid" type="submit" name="chose_3" value="Oui, c'est mon poisson !" ></td>
+              </tr>
+        </table>
+        <input class="btnValid" type="submit" style="" name="sp_no" value="Je ne reconnais pas mon poisson" >
+        </form>
     </div>
 </div>
 {% endblock %}

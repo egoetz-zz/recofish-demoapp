@@ -65,6 +65,7 @@ img {vertical-align: middle;}
 
 /* Fading animation */
 .fade {
+  opacity: 1;
   animation-name: fade;
   animation-duration: 1.5s;
 }

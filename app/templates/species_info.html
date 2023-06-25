@@ -23,13 +23,6 @@
             <a class="next" onclick="plusSlides(1)">❯</a>
 
             </div>
-            <br>
-
-            <div style="text-align:center">
-              <span class="dot" onclick="currentSlide(1)"></span>
-              <span class="dot" onclick="currentSlide(2)"></span>
-              <span class="dot" onclick="currentSlide(3)"></span>
-            </div>
 
             <div class="species" style = "width: 100% ; display: flex; justify-content: center;">
                 <h3 class="sp-names"><i>{{ info.ns}}</i><br>{{ info.nc}}</h3>
@@ -64,11 +57,7 @@ function showSlides(n) {
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
   slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
 }
 </script>
 
