@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 from ..predict import predict_img, load_model_images, fetch_species_info
 
-VERSION = 1.0
+VERSION = 1.1
 K_TOP = 3  # Number of predictions shown
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FIXED_NUMBER_OF_SLIDER_IMAGES = 3  # temporary code limitation. Should become dynamic
