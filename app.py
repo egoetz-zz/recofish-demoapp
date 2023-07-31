@@ -5,7 +5,7 @@ This script runs the app application using a development server.
 from os import environ
 from app import create_app
 
-app = create_app()
+app, db = create_app()
 
 if __name__ == '__main__':
     if False:

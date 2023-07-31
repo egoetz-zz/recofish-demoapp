@@ -1,20 +1,34 @@
 import os
 from flask import Flask, url_for
+import sqlite3
+# from flask_sqlalchemy import SQLAlchemy
 
 UPLOAD_FOLDER = 'static/uploads/'
+IMAGE_FOLDER = 'static/images/'
+DATA_FOLDER = 'data/'
+DATABASE_PATH = DATA_FOLDER + 'bdd_poissons.db'
+MODEL_PATH = 'recofish_classification_model.pt'
 
-app = None
+app, db = None, None
 def create_app():
-    global app
+    global app, db
     app = Flask(
         __name__,
         instance_relative_config=True,
         # static_url_path=''
     )
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    root_path = os.path.dirname(app.instance_path) + '/app/'
+
+    app.config['UPLOAD_PATH'] = root_path + UPLOAD_FOLDER
+    app.config['IMAGE_PATH'] = root_path + IMAGE_FOLDER
+    app.config['DATABASE_PATH'] = root_path + DATABASE_PATH
+    app.config['MODEL_PATH'] = root_path + MODEL_PATH
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DATABASE_PATH
+    # db = SQLAlchemy(app)
+
+
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY') or 'you-will-never-guess',
-        # SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(app.instance_path, 'app.db'),
         # SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
     # try:
@@ -36,4 +50,4 @@ def create_app():
     app.register_blueprint(main.bp)
     app.register_blueprint(pwa.bp)
 
-    return app
+    return app, db

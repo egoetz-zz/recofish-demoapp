@@ -6,7 +6,7 @@ from flask import (
 from flask import request, redirect, Response, flash
 from werkzeug.utils import secure_filename
 from PIL import Image
-from ..predict import predict_img, load_model_images, fetch_species_info
+from ..predict2 import predict_img, load_model_images, fetch_species_info
 
 VERSION = 1.1
 K_TOP = 3  # Number of predictions shown
@@ -54,7 +54,7 @@ def show_info(id):
         i += 1
     images2 = {}
     for i in range(FIXED_NUMBER_OF_SLIDER_IMAGES):
-        images2['img' + str(i + 1)] = images[i]
+        images2['img' + str(i + 1)] = 'images/' + images[i]
     return render_template('species_info.html', info=infos, images=images2)
 
 
@@ -86,8 +86,8 @@ def submit_file():
                 predictions['ns' + str(i + 1)] = cur['nom_scientifique']
                 predictions['nc' + str(i + 1)] = cur['nom_commun']
                 predictions['prob' + str(i + 1)] = "{:2.1f}".format(cur['value'])
-                predictions['img' + str(i + 1) + '1'] = model_images[i][0]
-                predictions['img' + str(i + 1) + '2'] = model_images[i][1]
+                predictions['img' + str(i + 1) + '1'] = 'images/' + model_images[i][0]
+                predictions['img' + str(i + 1) + '2'] = 'images/' + model_images[i][1]
 
             return render_template('success.html', predictions=predictions, img=filename)
     return render_template('main/index.html', title='Recofish-PWA')
