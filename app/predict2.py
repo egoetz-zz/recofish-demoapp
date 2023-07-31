@@ -1,3 +1,5 @@
+import json
+
 import flask
 import pandas as pd
 import timm as timm
@@ -71,22 +73,34 @@ def close_connection(exception):
 
 # preprocess img and call the model to predict the k most likely classes
 # return: the image, the k species, sorted by likelihood
-def predict_img(img, k=3):
+def predict_img(img, filename, k=3):
     global predictor
     if predictor is None:
         predictor = Predictor(flask.current_app.config['MODEL_PATH'])
 
     vals, preds = predictor.predict_img(img, k)
-    print("vals, preds= {}".format(tuple(zip(vals.numpy()[0], preds.numpy()[0]))))
-    s = [str(i) for i in preds.numpy()[0]]
+    labels, probas = [int(label) for label in preds.numpy()[0]], [round(float(proba), 2) for proba in vals.numpy()[0]]
+    lps = dict(zip(labels, probas))
+    print("vals, preds= {}".format(lps))
+    s = [str(label) for label in labels]
     query = "SELECT " + ",".join(fields_needed) + " FROM species LEFT JOIN families ON id_famille = families.ID WHERE label IN (" + ",".join(s) + ")"
     bdd = pd.read_sql_query(query, get_db())
     print(bdd[['ID', 'nom_scientifique', 'nom_commun', 'famille', 'label']])
     answers = pd.DataFrame(vals.numpy()[0], index=preds.numpy()[0], columns=["value"])
-    species = answers.merge(bdd, how='left', left_index=True, right_on='label')
-    print("species labels=", species.index.tolist())
-    print("species ids=", species.set_index('ID').index.tolist())
-    return species.set_index('ID')
+    species = answers.merge(bdd, how='left', left_index=True, right_on='label').set_index('ID')
+    ids = species.index.tolist()
+    print("species ids=", ids)
+    ips = dict(zip(ids, probas))
+    c = get_db().cursor()
+    c.execute("INSERT INTO connections (img_file_name, prediction) VALUES (?, ?)", (filename, json.dumps(ips)))
+    get_db().commit()
+    return species, c.lastrowid
+
+
+def store_selection(conn_id, id, sel):
+    c = get_db().cursor()
+    c.execute("UPDATE connections SET valid_ID=%i, valid_rank=%i WHERE ID=%i" % (id, sel, conn_id))
+    get_db().commit()
 
 
 # indices: None to get all images available (catalog), otherwise indices of the illustrative images to help validation

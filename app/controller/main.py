@@ -6,7 +6,7 @@ from flask import (
 from flask import request, redirect, Response, flash
 from werkzeug.utils import secure_filename
 from PIL import Image
-from ..predict2 import predict_img, load_model_images, fetch_species_info
+from ..predict2 import predict_img, load_model_images, fetch_species_info, store_selection
 
 VERSION = 1.1
 K_TOP = 3  # Number of predictions shown
@@ -33,13 +33,19 @@ def set_response_headers(response):
 def index():
     return render_template('main/index.html', title='Recofish progressive web app', version=VERSION)
 
-
+connection_id = 0
 @bp.route('/select_species')
 def select():
     # Form has 3 + 1 validation buttons -> check which was hit
+    sel, id = None, 0
     for i in range(1, K_TOP+1):
         if request.args.get('chose_' + str(i)) is not None:
-            return redirect('/species/' + request.args['id' + str(i)])
+            sel, id = i, int(request.args['id' + str(i)])
+    if request.args.get('sp_no') is not None:
+        sel = 0
+    store_selection(connection_id, id, sel)
+    if sel > 0:
+        return redirect('/species/' + str(id))
     return index()  # None of the species were validated -> return Home
 
 
@@ -60,6 +66,7 @@ def show_info(id):
 
 @bp.route('/classify', methods=['GET', 'POST'])
 def submit_file():
+    global connection_id
     if request.method == 'POST':
         # check if the post request has the file part
         if 'image' not in request.files:
@@ -76,7 +83,7 @@ def submit_file():
             # file.save(img_path)
             # img = Image.open(img_path)
             img = Image.open(BytesIO(file.read())).convert('RGB')
-            species = predict_img(img)
+            species, connection_id = predict_img(img, filename)
 
             model_images: list[list[Image]] = load_model_images(species.index.tolist(), indices=(2, 3))
             predictions = {}
