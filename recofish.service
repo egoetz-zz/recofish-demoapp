@@ -3,12 +3,11 @@ Description=uWSGI server for recofish
 After=network.target
 
 [Service]
-#User=www-data
-#Group=www-data
 WorkingDirectory=/opt/recofish-demoapp
 ExecStart=/usr/bin/uwsgi /opt/recofish-demoapp/uwsgi.ini
-EnvironmentFile=/opt/recofish-demoapp/.env
 Restart=always
+KillMode=process
+TimeoutSec=30
 
 [Install]
 WantedBy=multi-user.target
