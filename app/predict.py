@@ -4,7 +4,6 @@ import timm as timm
 
 import torch
 import torchvision.transforms as transforms
-
 import os
 # Linux: pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 # from flask import flash
