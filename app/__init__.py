@@ -7,6 +7,7 @@ UPLOAD_FOLDER = 'static/uploads/'
 IMAGE_FOLDER = 'static/images/'
 DATA_FOLDER = 'data/'
 DATABASE_PATH = DATA_FOLDER + 'bdd_poissons.db'
+DB_HISTORY_PATH = DATA_FOLDER + 'bdd_webapp.db'
 MODEL_PATH = 'recofish_classification_model.pt'
 
 app, db = None, None
@@ -22,6 +23,7 @@ def create_app():
     app.config['UPLOAD_PATH'] = root_path + UPLOAD_FOLDER
     app.config['IMAGE_PATH'] = root_path + IMAGE_FOLDER
     app.config['DATABASE_PATH'] = root_path + DATABASE_PATH
+    app.config['DB_HISTORY_PATH'] = root_path + DB_HISTORY_PATH
     app.config['MODEL_PATH'] = root_path + MODEL_PATH
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DATABASE_PATH
     # db = SQLAlchemy(app)

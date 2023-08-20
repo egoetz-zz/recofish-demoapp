@@ -33,17 +33,17 @@ def set_response_headers(response):
 def index():
     return render_template('main/index.html', title='Recofish progressive web app', version=VERSION)
 
-connection_id = 0
+
 @bp.route('/select_species')
 def select():
     # Form has 3 + 1 validation buttons -> check which was hit
     sel, id = None, 0
-    for i in range(1, K_TOP+1):
+    for i in range(1, K_TOP + 1):
         if request.args.get('chose_' + str(i)) is not None:
             sel, id = i, int(request.args['id' + str(i)])
     if request.args.get('sp_no') is not None:
         sel = 0
-    store_selection(connection_id, id, sel)
+    store_selection(connections[request.remote_addr], id, sel)
     if sel > 0:
         return redirect('/species/' + str(id))
     return index()  # None of the species were validated -> return Home
@@ -64,9 +64,13 @@ def show_info(id):
     return render_template('species_info.html', info=infos, images=images2)
 
 
+# Basic session mgt: this dict stores the last connection (= call for prediction) for each ip_address (= user)
+# In order to update the right connection with user validation when (and if) it comes
+connections = {}
+
+
 @bp.route('/classify', methods=['GET', 'POST'])
 def submit_file():
-    global connection_id
     if request.method == 'POST':
         # check if the post request has the file part
         if 'image' not in request.files:
@@ -83,7 +87,7 @@ def submit_file():
             # file.save(img_path)
             # img = Image.open(img_path)
             img = Image.open(BytesIO(file.read())).convert('RGB')
-            species, connection_id = predict_img(img, filename)
+            species, connections[request.remote_addr] = predict_img(img, filename, request.remote_addr)
 
             model_images: list[list[Image]] = load_model_images(species.index.tolist(), indices=(2, 3))
             predictions = {}

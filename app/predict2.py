@@ -10,7 +10,7 @@ import sqlite3
 import os
 # Linux: pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 # from flask import flash
-from flask import g
+from flask import g, request
 from itertools import chain
 
 IMAGE_SIZE = 224
@@ -19,9 +19,9 @@ NUM_CLASSES = 101
 WORMS_BASE_URl = "https://www.marinespecies.org/aphia.php?p=taxdetails&id="  # Add id_worms from species table
 DORIS_BASE_URL = "https://doris.ffessm.fr/ref/specie/"  # Add id_doris from species table
 
-
 basic_fields = {'species.ID', 'nom_scientifique', 'nom_commun', 'famille', 'label'}
-dict_map = {'bio': ['taille_adulte_min', 'taille_adulte_max', 'profondeur_habituelle_min', 'profondeur_habituelle_max', 'Colonne_d_eau', 'danger', 'mode_de_vie'],
+dict_map = {'bio': ['taille_adulte_min', 'taille_adulte_max', 'profondeur_habituelle_min', 'profondeur_habituelle_max',
+                    'Colonne_d_eau', 'danger', 'mode_de_vie'],
             'reglementation': [],
             'pratiques': [],
             'sources_externes': ['id_DORIS']}
@@ -65,15 +65,29 @@ def get_db():
     return db
 
 
+def get_db_history():
+    db = getattr(g, '_db_history', None)
+    if db is None:
+        print("DB_HISTORY PATH=", flask.current_app.config['DB_HISTORY_PATH'])
+        db = g._db_history = sqlite3.connect(flask.current_app.config['DB_HISTORY_PATH'])
+    return db
+
+
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
 
+def close_connection_history(exception):
+    db = getattr(g, '_db_history', None)
+    if db is not None:
+        db.close()
+
+
 # preprocess img and call the model to predict the k most likely classes
 # return: the image, the k species, sorted by likelihood
-def predict_img(img, filename, k=3):
+def predict_img(img, filename, ip_address, k=3):
     global predictor
     if predictor is None:
         predictor = Predictor(flask.current_app.config['MODEL_PATH'])
@@ -83,7 +97,9 @@ def predict_img(img, filename, k=3):
     lps = dict(zip(labels, probas))
     print("vals, preds= {}".format(lps))
     s = [str(label) for label in labels]
-    query = "SELECT " + ",".join(fields_needed) + " FROM species LEFT JOIN families ON id_famille = families.ID WHERE label IN (" + ",".join(s) + ")"
+    query = "SELECT " + ",".join(
+        fields_needed) + " FROM species LEFT JOIN families ON id_famille = families.ID WHERE label IN (" + ",".join(
+        s) + ")"
     bdd = pd.read_sql_query(query, get_db())
     print(bdd[['ID', 'nom_scientifique', 'nom_commun', 'famille', 'label']])
     answers = pd.DataFrame(vals.numpy()[0], index=preds.numpy()[0], columns=["value"])
@@ -91,16 +107,19 @@ def predict_img(img, filename, k=3):
     ids = species.index.tolist()
     print("species ids=", ids)
     ips = dict(zip(ids, probas))
-    c = get_db().cursor()
-    c.execute("INSERT INTO connections (img_file_name, prediction) VALUES (?, ?)", (filename, json.dumps(ips)))
-    get_db().commit()
-    return species, c.lastrowid
+    c = get_db_history().cursor()
+    c.execute("INSERT INTO connections (img_file_name, prediction, ip_addr) VALUES (?, ?, ?)", (filename, json.dumps(ips), ip_address))
+    get_db_history().commit()
+    conn_id = c.lastrowid
+    print("conn_id=", ids)
+    return species, conn_id
 
 
+# if user validates the prediction (either 1, 2, 3 or None), store answer
 def store_selection(conn_id, id, sel):
-    c = get_db().cursor()
+    c = get_db_history().cursor()
     c.execute("UPDATE connections SET valid_ID=%i, valid_rank=%i WHERE ID=%i" % (id, sel, conn_id))
-    get_db().commit()
+    get_db_history().commit()
 
 
 # indices: None to get all images available (catalog), otherwise indices of the illustrative images to help validation
@@ -117,15 +136,17 @@ def load_model_images(species, indices=None):
 
 
 fields_left = ['ID', 'nom_commun', 'autres_noms', 'id_famille',
-              'reglementation', 'danger', 'mode_de_vie',
-              'entrainement_modele', 'A_entrainer', 'label', 'nb_images'
-              'Cotes_françaises', 'Mediterranée', 'Atlantique', 'Manche', 'Mer du Nord',
-              'Pêche_commerciale', 'IUCN_red_list',
-              'citation_ouvrages', 'citation_doris']
+               'reglementation', 'danger', 'mode_de_vie',
+               'entrainement_modele', 'A_entrainer', 'label', 'nb_images'
+                                                              'Cotes_françaises', 'Mediterranée', 'Atlantique',
+               'Manche', 'Mer du Nord',
+               'Pêche_commerciale', 'IUCN_red_list',
+               'citation_ouvrages', 'citation_doris']
 
 
 def fetch_species_info(id):
-    query = "SELECT " + ",".join(fields_needed) + " FROM species LEFT JOIN families ON id_famille = families.ID WHERE species.ID={}".format(id)
+    query = "SELECT " + ",".join(
+        fields_needed) + " FROM species LEFT JOIN families ON id_famille = families.ID WHERE species.ID={}".format(id)
     bdd = pd.read_sql_query(query, get_db())
     print(bdd[['ID', 'nom_scientifique', 'nom_commun', 'famille', 'label']])
     full_dict = bdd.iloc[0].to_dict()
